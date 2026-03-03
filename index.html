@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Catatan Daftar Mata Kuliah di ITS</title>
+
+<style>
+    /* Set font style */
+    body { font-family: Arial; }
+
+    /* Remove default bullet and hide child list */
+    .tree ul {
+        list-style: none;
+        padding-left: 20px; /* indent children */
+        display: none; /* hidden by default */
+    }
+
+    /* Add spacing between nodes */
+    .tree li {
+        margin: 5px 0;
+    }
+
+    /* Style for + and - button */
+    .toggle {
+        cursor: pointer;     /* pointer cursor on hover */
+        width: 20px;         /* fixed width */
+        display: inline-block;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    /* Empty space for leaf nodes */
+    .leaf {
+        display: inline-block;
+        width: 20px; /* same width as toggle */
+    }
+</style>
+</head>
+
+<body>
+
+<!-- Container where tree will be generated -->
+<div class="tree" id="tree"></div>
+
+<!-- Load external data file -->
+<script src="dbtree.js"></script>
+
+<script>
+
+// Function to create tree recursively
+function createTree(data, isRoot = false) {
+
+    // Create <ul> element
+    const ul = document.createElement("ul");
+
+    // Show root level
+    ul.style.display = "block";
+
+
+    // Loop through each node
+    data.forEach(node => {
+
+        // Create <li> for each node
+        const li = document.createElement("li");
+
+        // Check if node has children
+        if (node.children && node.children.length > 0) {
+
+            // Create + button
+            const toggle = document.createElement("span");
+            toggle.className = "toggle";
+            toggle.textContent = "[+]"; // Default collapsed
+
+            // Add click event
+            toggle.onclick = function () {
+
+                // Find child <ul>
+                const childUl = li.querySelector("ul");
+
+                // If open -> close
+                if (childUl.style.display === "block") {
+                    childUl.style.display = "none";
+                    toggle.textContent = "[+]"; // change to +
+                }
+                // If closed -> open
+                else {
+                    childUl.style.display = "block";
+                    toggle.textContent = "[−]"; // change to -
+                }
+            };
+
+            // Add + button to <li>
+            li.appendChild(toggle);
+
+            // Add SPACE after +  (IMPORTANT FIX)
+            li.appendChild(document.createTextNode(" "));
+
+            // Add node text
+            li.appendChild(document.createTextNode(node.text));
+
+            // Recursively create children
+            const childTree = createTree(node.children);
+
+            // Hide children initially
+            childTree.style.display = "none";
+
+            // Add children to <li>
+            li.appendChild(childTree);
+
+        } else {
+            // If no children -> this is leaf node
+
+            const leaf = document.createElement("span");
+            leaf.className = "leaf";
+
+            // Add empty space placeholder
+            li.appendChild(leaf);
+
+            // Add SPACE before text (for alignment)
+            li.appendChild(document.createTextNode(" - "));
+
+            // Add text
+            li.appendChild(document.createTextNode(node.text));
+        }
+
+        // Add <li> to <ul>
+        // ul.appendChild(li);
+        ul.appendChild(li); // add the root <li> to <ul>
+
+        // If this <ul> is the root level
+        if (isRoot) {
+            const space = document.createElement("div"); // create empty line
+            space.style.height = "10px"; // space size (change if needed)
+            ul.appendChild(space); // add space after each root
+        }
+    });
+
+    // Return completed <ul>
+    return ul;
+}
+
+// Add generated tree into div
+document.getElementById("tree").appendChild(createTree(treeData, true));
+
+</script>
+
+</body>
+</html>
