@@ -32,7 +32,7 @@
     /* Empty space for leaf nodes */
     .leaf {
         display: inline-block;
-        width: 20px; /* same width as toggle */
+        width: 7px; /* same width as toggle */
     }
 </style>
 </head>
@@ -43,7 +43,7 @@
 <div class="tree" id="tree"></div>
 
 <!-- Load external data file -->
-<script src="dbtree.js"></script>
+<script src="dbtreev3.js"></script>
 
 <script>
 
@@ -56,6 +56,7 @@ function createTree(data, isRoot = false) {
     // Show root level
     ul.style.display = "block";
 
+    //let counter = 1;
 
     // Loop through each node
     data.forEach(node => {
@@ -117,14 +118,11 @@ function createTree(data, isRoot = false) {
             li.appendChild(leaf);
 
             // Add SPACE before text (for alignment)
-            li.appendChild(document.createTextNode(" - "));
-
-            // Add text
+            li.appendChild(document.createTextNode("- "));
             li.appendChild(document.createTextNode(node.text));
         }
 
         // Add <li> to <ul>
-        // ul.appendChild(li);
         ul.appendChild(li); // add the root <li> to <ul>
 
         // If this <ul> is the root level
